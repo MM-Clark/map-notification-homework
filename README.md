@@ -1,5 +1,14 @@
 # Map Notification Homework
 
+## Submission Instructions
+To complete and submit this assignment, you will be using Git and GitHub. Please follow these exact steps to ensure your work is tracked and graded correctly:
+
+1. Clone the Repository: Start by cloning the provided assignment repository to your local machine.
+2. Create Your Branch: Do not work on the main branch. Immediately create and switch to a new branch using your GitHub username.
+3. Commit Your Work: As you complete the assignment, commit your changes regularly to your branch. Make sure you include you commit message.
+4. Push and Submit: Push your branch to the remote repository.
+### Grading Note: You do not need to open a Pull Request. I will be evaluating the final commit made to your specific branch before the assignment deadline. Any commits pushed 3 after the deadline will not be graded.
+
 ## Scenario
 The College of Charleston wants to notify students about pop-up campus events (e.g., free food, guest speakers).
 
