@@ -1,6 +1,24 @@
 import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
+import { StackScreen } from "expo-router/build/layouts/stack-utils";
+// ------------------------------------------------------------------------------------
+// Part 5: Notification Routing (expo-notifications)
+// The Listener Setup
+
+// In root _layout.tsx (or another top-level component), set up 
+// Notifications.addNotificationResponseReceivedListener.
+// The Routing Logic
+
+// When a user taps a notification, extract the payload data.
+// Use router.push('/map') to navigate to the Map screen.
+// The Parameter Passing
+
+// Pass the event coordinates or ID through router parameters so map.tsx knows which event triggered the alert.
+// The Auto-Zoom
+
+// In map.tsx, create a useEffect that listens for router parameters.
+// If a parameter exists, use your map useRef to automatically animateToRegion for that event pin.
 
 export default function RootLayout() {
   const router = useRouter();
@@ -30,7 +48,9 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <Stack/>
+    <Stack screenOptions={{headerShown: false}}>
+      <Stack.Screen name="(tabs)" />
+    </Stack>
   )
   // ... rest of your layout code
 }
