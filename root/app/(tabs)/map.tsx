@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useRef, useState } from "react";
 import MapView, { Circle, Marker, Region, PROVIDER_GOOGLE, Callout } from "react-native-maps";
 
@@ -101,9 +101,17 @@ const map = () => {
 
       </MapView>
 
-      <View style={styles.bottomCard}>
-        <Text style={styles.cardTitle}>Coffee Radar</Text>
-        <Text>Distance to target: {distance ? `${Math.round(distance)} meters` : 'Calculating...'}</Text>
+      <View style={styles.floatingButtonContainer}>
+{/* ------------------------------------------------------------------------------------------------------------------ */}
+        {/* TODO (Task 4): Attach your recenterMap function to this button's onPress */}
+        <TouchableOpacity style={styles.actionButton} onPress={recenterMap}>
+          <Text style={styles.actionButtonText}>Recenter</Text>
+        </TouchableOpacity>
+        
+        {/* TODO (Bonus): Attach your fitAllMarkers function to this button's onPress */}
+        <TouchableOpacity style={[styles.actionButton, styles.bonusButton]} onPress={fitAllMarkers}>
+          <Text style={styles.actionButtonText}>Fit All</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -158,5 +166,30 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
     marginBottom: 10,
+  },
+  floatingButtonContainer: {
+    position: "absolute",
+    bottom: 40,
+    right: 20,
+    gap: 10, 
+  },
+  actionButton: {
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowRadius: 3,
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    alignItems: "center",
+  },
+  bonusButton: {
+    backgroundColor: "#007AFF", 
+  },
+  actionButtonText: {
+    fontWeight: "bold",
+    color: "#333",
   },
 });
