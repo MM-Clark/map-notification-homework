@@ -1,20 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import MapView, { Circle, Marker } from 'react-native-maps';
+import { Alert, StyleSheet, Text, View } from "react-native";
+import React, { useRef, useState } from "react";
+import MapView, { Circle, Marker, Region, PROVIDER_GOOGLE, Callout } from "react-native-maps";
 
 // map.tsx
 // --------------------------------------------------------------------------------
-// Part 2: The Map & Overlays (react-native-maps)
-// The Map Foundation
-
-// Render a full-screen map on map.tsx, initially centered on the Charleston area.
-// Enable showsUserLocation={true} so the user can see their own blue GPS dot.
-// The Data (Markers)
-
-// Create an array of at least 3 event locations with coordinates.
-// Map over this array to render <Marker> components.
-// The Custom Callout
-
 // Implement a custom <Callout tooltip={true}> for each marker.
 // Display the event name and a short description.
 // Android note: attach the onPress to the <Callout> itself.
@@ -29,41 +18,60 @@ type Coordinate = {
   longitude: number;
 };
 
-const locations = [
-  {
-    id: 1,
-    title: 'Location A H',
-    latitude: 32.9366,
-    longitude: -80.0385 ,
-  },
-  {
-    id: 2,
-    title: 'Location B I',
-    latitude: 32.940114462656005,
-    longitude: -80.04857197526441,
-  },
-  {
-    id: 3,
-    title: 'Location C W',
-    latitude: 32.93982,
-    longitude: -80.03677,
-  },
+// --- TYPESCRIPT INTERFACES ---
+interface TourLocation {
+  id: string;
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+}
+
+// --- STARTER DATA ---
+const TOUR_LOCATIONS: TourLocation[] = [
+  { id: '1', name: 'Home', description: 'Home of the Cougars.', latitude: 32.9366, longitude: -80.0385 },
+  { id: '2', name: 'CIP', description: 'Historic defensive seawall.', latitude: 32.940114462656005, longitude: -80.04857197526441 },
+  { id: '3', name: 'Walmart', description: '10-acre park in the city center.', latitude: 32.93982, longitude: -80.03677 }
 ];
 
-const map = () => {
+// PUT TYPE OF THE OBJECT
+const CHARLESTON_CENTER: Region = {
+  latitude: 32.78,
+  longitude: -79.93,
+  latitudeDelta: 0.05,
+  longitudeDelta: 0.05,
+};
 
+const map = () => {
+  const mapRef = useRef<MapView>(null);
+  const [distance, setDistance] = useState<number | null>(null);
+  
+  const recenterMap = () => { 
+    mapRef.current?.animateCamera({center:CHARLESTON_CENTER}, {duration:1000})
+  };
+
+  const handleCalloutPress = (name: string, desc: string) => {
+    Alert.alert(`${name}: ${desc}`)
+  };
+
+  const fitAllMarkers = () => {
+    if(mapRef.current) {
+      mapRef.current.fitToCoordinates(TOUR_LOCATIONS, {
+        edgePadding: {top: 100, bottom: 50, right:50, left:50},
+        animated:true
+      });
+    }
+  };
+  
   return (
     <View>
       <MapView 
         style={styles.map} 
+        provider={PROVIDER_GOOGLE} 
+        initialRegion={CHARLESTON_CENTER}
         showsUserLocation={true} 
-        initialRegion={{
-          latitude: locations[0].latitude, 
-          longitude: locations[0].longitude, 
-          latitudeDelta: 0.02, 
-          longitudeDelta: 0.02
-        }}>
-        <Marker coordinate={{ 
+      >
+        {/* <Marker coordinate={{ 
           latitude: TARGET_LAT, 
           longitude: TARGET_LNG 
         }} title="Target" />
@@ -72,7 +80,25 @@ const map = () => {
           longitude: TARGET_LNG 
         }} 
         radius={GEOFENCE_RADIUS} 
-        fillColor="rgba(0, 255, 0, 0.3)" />
+        fillColor="rgba(0, 255, 0, 0.3)" /> */}
+
+        {TOUR_LOCATIONS.map((item) =>
+            // key to keep track of what has already been looked at
+            <Marker coordinate={item} key={item.id}>
+              <Callout
+                  //allows to click on the button
+                  tooltip={true}
+                  onPress={() => handleCalloutPress(item.name, item.description)}
+              >
+                  <View style={styles.calloutCard}>
+                      <Text style={styles.calloutTitle}> {item.name} </Text>
+                      <Text style={styles.calloutDesc}> {item.description} </Text>
+                  </View>
+              </Callout>
+
+          </Marker>
+        )}
+
       </MapView>
 
       <View style={styles.bottomCard}>
@@ -86,9 +112,51 @@ const map = () => {
 export default map;
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  centeredContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  map: { flex: 1 },
-  bottomCard: { position: 'absolute', bottom: 40, left: 20, right: 20, backgroundColor: 'white', padding: 20, borderRadius: 15, elevation: 5 },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 5 },
+  container: { 
+    flex: 1 
+  },
+  centeredContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  map: { 
+    flex: 1 
+  },
+  bottomCard: { 
+    position: 'absolute', 
+    bottom: 40, 
+    left: 20, 
+    right: 20, 
+    backgroundColor: 'white', 
+    padding: 20, 
+    borderRadius: 15, 
+    elevation: 5 
+  },
+  cardTitle: { 
+    fontSize: 18, 
+    fontWeight: 'bold', 
+    marginBottom: 5 
+  },
+  calloutCard: {
+    backgroundColor: "white",
+    borderRadius: 8,
+    padding: 12,
+    width: 200,
+    elevation: 4, 
+    shadowColor: "#000",
+    shadowRadius: 4,
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  calloutTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  calloutDesc: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 10,
+  },
 });
