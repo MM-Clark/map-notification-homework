@@ -11,7 +11,7 @@ export default function Layout() {
         options={{
           title: "Home",
           tabBarIcon: ({ focused, color, size }) => {
-            const iconName = focused ? "location" : "location-outline";
+            const iconName = focused ? "home" : "home-outline";
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         }}
@@ -21,7 +21,7 @@ export default function Layout() {
         options={{
           title: "Map",
           tabBarIcon: ({ focused, color, size }) => {
-            const iconName = focused ? "search" : "search-outline";
+            const iconName = focused ? "location" : "location-outline";
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         }}
