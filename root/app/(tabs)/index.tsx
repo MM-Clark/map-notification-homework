@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Alert, Linking, Text, View } from "react-native";
 import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
+import TOUR_LOCATIONS from './map';
 
 // Target Coordinates (e.g., A Local Coffee Shop)
 const TARGET_LAT = 32.7900; // Patriots Point area
@@ -21,15 +22,15 @@ Notifications.setNotificationHandler({
 });
 
 // Helper Function: Calculates distance in meters between two coordinates
-const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-  const R = 6371e3; 
-  const toRadians = (deg: number) => deg * (Math.PI / 180);
-  const dLat = toRadians(lat2 - lat1);
-  const dLon = toRadians(lon2 - lon1);
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; 
-};
+// const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+//   const R = 6371e3; 
+//   const toRadians = (deg: number) => deg * (Math.PI / 180);
+//   const dLat = toRadians(lat2 - lat1);
+//   const dLon = toRadians(lon2 - lon1);
+//   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+//   return R * c; 
+// };
 
 export default function Index() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -72,48 +73,49 @@ export default function Index() {
       subscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
-          distanceInterval: 10, // Only fire callback if they move at least 10 meters
-        }, // newLocation is given to use automatically, nameless function below
+          distanceInterval: 10, // Only fire callback if move at least 10 meters
+        }, 
         (newLocation) => {
-          // Update the map UI
+          // Update map UI
           setLocation(newLocation);
       
-          // Calculate how far the user is from TD Arena
-          const dist = getDistance(
-            newLocation.coords.latitude,
-            newLocation.coords.longitude,
-            TARGET_LAT,
-            TARGET_LNG, 
-          );
-          setDistance(dist);
-          // 3. The Geofence Logic
-          if (dist <= GEOFENCE_RADIUS) {
-            // If they are inside the circle AND haven't been notified yet
-            if (!hasEnteredZone.current) {
-              console.log("Crossed into the zone! Triggering notification...");
-              // -------------------------------------------------------------
-              // two props, what looks like (content), when to send (trigger)
-              // -------------------------------------------------------------
-              Notifications.scheduleNotificationAsync({
-                content: {
-                  title: "Welcome to the Coffee Target Location!",
-                  body: "Go Caffeine! Click here to buy a cup or something.",
-                  sound: true,
-                  data: {customData: "Coffee!"},
-                },
-                trigger: null, // Fire immediately
-              });
-      
-              // Mark that they have entered so we don't spam them
-              hasEnteredZone.current = true;
+          // ********** Calculate how far user is from events ***********************************
+          TOUR_LOCATIONS.forEach((targetLoc) => {
+            // geolib expects coordinate objects, not 4 raw numbers
+            const dist = getDistance(
+              { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
+              { latitude: targetLoc.latitude, longitude: targetLoc.longitude }
+            );
+
+            // Geofence Logic for THIS specific location
+            if (dist <= GEOFENCE_RADIUS) {
+              
+              // If they are inside the circle AND haven't been notified for THIS location yet
+              if (!enteredZones.current.has(targetLoc.id)) {
+                console.log(`Crossed into ${targetLoc.name}! Triggering notification...`);
+                
+                Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: `Welcome to ${targetLoc.name}!`,
+                    body: targetLoc.message || "Click here to view more details.",
+                    sound: true,
+                    data: { locationId: targetLoc.id }, // Pass the ID so you know what they clicked
+                  },
+                  trigger: null, // Fire immediately
+                });
+        
+                // Add this location's ID to our Set so we don't spam them
+                enteredZones.current.add(targetLoc.id);
+              }
+
+            } else {
+              // If they leave THIS circle, remove it from the Set to reset the tracker
+              if (enteredZones.current.has(targetLoc.id)) {
+                console.log(`Left ${targetLoc.name}. Resetting tracker.`);
+                enteredZones.current.delete(targetLoc.id);
+              }
             }
-          } else {
-             // If they leave the circle, reset the tracker so they can be notified again later
-            if (hasEnteredZone.current) {
-              console.log("Left the zone. Resetting tracker.");
-              hasEnteredZone.current = false;
-            }
-          }
+          });
         }
       );
     })();
