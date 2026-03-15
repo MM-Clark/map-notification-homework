@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import * as Notifications from "expo-notifications";
 import { Stack, useRouter } from "expo-router";
 import { StackScreen } from "expo-router/build/layouts/stack-utils";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { StatusBar } from "react-native";
 // ------------------------------------------------------------------------------------
 // Part 5: Notification Routing (expo-notifications)
 // The Listener Setup
@@ -21,36 +23,40 @@ import { StackScreen } from "expo-router/build/layouts/stack-utils";
 // If a parameter exists, use your map useRef to automatically animateToRegion for that event pin.
 
 export default function RootLayout() {
-  const router = useRouter();
+  // const router = useRouter();
 
-  useEffect(() => {
-    // This listener fires when the user physically taps the notification in their tray
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        // 1. Extract the custom data payload you sent with the notification
-        const eventData = response.notification.request.content.data;
+  // useEffect(() => {
+  //   // This listener fires when the user physically taps the notification in their tray
+  //   const subscription = Notifications.addNotificationResponseReceivedListener(
+  //     (response) => {
+  //       // 1. Extract the custom data payload you sent with the notification
+  //       const eventData = response.notification.request.content.data;
 
-        // 2. Route the user to the map and pass the coordinates as URL parameters
-        // Make sure your map screen can read these parameters and use them to center the map
-        if (eventData && eventData.latitude && eventData.longitude) {
-          router.push({
-            pathname: "/map",
-            params: {
-              lat: eventData.latitude,
-              lng: eventData.longitude,
-            },
-          });
-        }
-      },
-    );
+  //       // 2. Route the user to the map and pass the coordinates as URL parameters
+  //       // Make sure your map screen can read these parameters and use them to center the map
+        
+  //       if (eventData && eventData.latitude && eventData.longitude) {
+  //         router.push({
+  //           pathname: "/map",
+  //           params: {
+  //             lat: eventData.latitude,
+  //             lng: eventData.longitude,
+  //           },
+  //         });
+  //       }
+  //     },
+  //   );
 
-    return () => subscription.remove();
-  }, []);
+  //   return () => subscription.remove();
+  // }, []);
 
   return (
-    <Stack screenOptions={{headerShown: false}}>
-      <Stack.Screen name="(tabs)" />
-    </Stack>
+    <SafeAreaProvider>
+      <Stack screenOptions={{headerShown: false}}>
+        <Stack.Screen name="index" />
+      </Stack>
+      {/* <StatusBar style="auto" /> */}
+    </SafeAreaProvider>
   )
   // ... rest of your layout code
 }
