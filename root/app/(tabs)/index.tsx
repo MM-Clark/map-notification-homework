@@ -23,17 +23,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-// Helper Function: Calculates distance in meters between two coordinates
-// const getDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
-//   const R = 6371e3; 
-//   const toRadians = (deg: number) => deg * (Math.PI / 180);
-//   const dLat = toRadians(lat2 - lat1);
-//   const dLon = toRadians(lon2 - lon1);
-//   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-//   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//   return R * c; 
-// };
-
 export default function Index() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
@@ -104,7 +93,10 @@ export default function Index() {
                     title: `Welcome to ${targetLoc.name}!`,
                     body: targetLoc.description || "Click here to view more details.",
                     sound: true,
-                    data: { locationId: targetLoc.id }, // Pass the ID so you know what they clicked
+                    data: { 
+                      latitude: targetLoc.latitude, 
+                      longitude: targetLoc.longitude
+                    }, // Pass the ID so you know what they clicked
                   },
                   trigger: null, // Fire immediately
                 });

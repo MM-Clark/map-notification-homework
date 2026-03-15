@@ -1,18 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
+import { useLocalSearchParams } from "expo-router";
 
-// map.tsx
-// --------------------------------------------------------------------------------
-// Implement a custom <Callout tooltip={true}> for each marker.
-// Display the event name and a short description.
-// Android note: attach the onPress to the <Callout> itself.
-// ----------------------------------------------------------------------------------------
-// Part 3: Refs & Programmatic Control
-// Attach a useRef to your <MapView>.
-// Add a floating Fit All Events button over the map.
-// On press, use mapRef.current?.fitToCoordinates() to adjust 
-// the camera so all event markers are framed on screen.
 type Coordinate = {
   latitude: number;
   longitude: number;
@@ -46,6 +36,26 @@ const map = () => {
   const mapRef = useRef<MapView>(null);
   const [distance, setDistance] = useState<number | null>(null);
   
+  const params = useLocalSearchParams();
+
+  useEffect(() => {
+    if (params.lat && params.lng && mapRef.current) {
+      // find specific location object from array using ID
+      const targetEvent = TOUR_LOCATIONS.find(loc => loc.id === params.locationId);
+      
+      // URL parameters always strings, so must convert back to numbers
+      const targetLat = parseFloat(params.lat as string);
+      const targetLng = parseFloat(params.lng as string);
+
+      mapRef.current.animateToRegion({
+        latitude: targetLat,
+        longitude: targetLng,
+        latitudeDelta: 0.005, 
+        longitudeDelta: 0.005,
+      }, 1000);
+    }
+  }, [params.lat, params.lng]);
+
   const recenterMap = () => { 
     mapRef.current?.animateCamera({center:CHARLESTON_CENTER}, {duration:1000})
   };
