@@ -28,7 +28,7 @@ interface TourLocation {
 }
 
 // --- STARTER DATA ---
-const TOUR_LOCATIONS: TourLocation[] = [
+export const TOUR_LOCATIONS: TourLocation[] = [
   { id: '1', name: 'Home', description: 'Home of the Cougars.', latitude: 32.91213, longitude: -80.01183 },
   { id: '2', name: 'CIP', description: 'Historic defensive seawall.', latitude: 32.940114462656005, longitude: -80.04857197526441 },
   { id: '3', name: 'Walmart', description: '10-acre park in the city center.', latitude: 32.93982, longitude: -80.03677 }
