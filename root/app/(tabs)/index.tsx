@@ -1,11 +1,11 @@
 import getDistance from "geolib/es/getPreciseDistance";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
 import {TOUR_LOCATIONS} from './map';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useRouter } from "expo-router";
 
 // Target Coordinates (e.g., A Local Coffee Shop)
 const TARGET_LAT = 32.7900; // Patriots Point area
@@ -40,37 +40,40 @@ export default function Index() {
   const [distance, setDistance] = useState<number | null>(null);
 
   const enteredZones = useRef<{ [key: string]: boolean }>({});
+  const router = useRouter();
+  // helper function for pressing button to request permissions
+  const requestPermissions = async () => {
+    const locationStatus = await Location.requestForegroundPermissionsAsync(); 
+    if(locationStatus.status !== 'granted') {
+        setErrorMsg('Foreground location permission is required.');
+        Alert.alert("Location Permission Denied.", "Please allow tracking.", [
+          {text: "Cancel", style: "cancel"},
+          {text: "Open Settings", onPress: () => Linking.openSettings()}
+        ]);
+        return false;
+    }
+
+    const notificationStatus = await Notifications.requestPermissionsAsync();
+    if(notificationStatus.status !== 'granted') {
+        setErrorMsg('Notification permission is required.');
+        Alert.alert("Notification Settings Denied", "Please Allow Notifications.", [
+          {text: "Cancel", style: "cancel"},
+          {text: "Open Settings", onPress: () => Linking.openSettings()}
+        ]);
+        return false;
+    }
+
+    setErrorMsg(null);
+    return true;
+  };
 
   useEffect(() => {
     let subscription: Location.LocationSubscription | null = null;
 
     (async () => {
       // TODO 3: Request Foreground Location AND Notification permissions here.
-      const locationStatus = await Location.requestForegroundPermissionsAsync(); 
-      if(locationStatus.status ==='granted') {
-          setErrorMsg(null);
-      }
-      if(locationStatus.status !== 'granted') {
-          setErrorMsg('Foreground location permission is required.');
-          // GO TO SETTINGS TO CHANGE PERMISSIONS *************************
-          Alert.alert("Location Permission Denied.","Please allow tracking.",[
-            {text: "Cancel", style: "cancel"},
-            {text: "Open Settings", onPress: () => Linking.openSettings()}
-          ]);
-          // cannot view, just return ****************
-          return;
-      }
-      const notificationStatus = await Notifications.requestPermissionsAsync();
-      if(notificationStatus.status === 'granted') {
-          setErrorMsg(null);
-      }
-      if(notificationStatus.status !== 'granted') {
-          setErrorMsg('Notification permission is required.');
-          Alert.alert("Notification Settings Denied", "Please Allow Notifications.", [
-            {text: "Cancel", style: "cancel"},
-            {text: "Open Settings", onPress: () => Linking.openSettings()}
-          ])
-      }
+      const hasPermissions = await requestPermissions();
+      if (!hasPermissions) return; // return if no permissions granted 
       
       subscription = await Location.watchPositionAsync(
         {
