@@ -136,13 +136,7 @@ export default function Index() {
 
 
   return (
-    <SafeAreaView
-      // style={{
-      //   flex: 1,
-      //   justifyContent: "center",
-      //   alignItems: "center",
-      // }}
-    >
+    <SafeAreaView style={styles.container}>
       <Text>Welcome to the Campus Map Notification App!</Text>
 
       {errorMsg && <Text style={styles.errorText}>{errorMsg}</Text>}
