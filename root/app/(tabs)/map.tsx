@@ -19,9 +19,9 @@ interface TourLocation {
 
 // --- STARTER DATA ---
 export const TOUR_LOCATIONS: TourLocation[] = [
-  { id: '1', name: 'Home', description: 'Home of the Cougars.', latitude: 32.91213, longitude: -80.01183 },
-  { id: '2', name: 'CIP', description: 'Historic defensive seawall.', latitude: 32.940114462656005, longitude: -80.04857197526441 },
-  { id: '3', name: 'Walmart', description: '10-acre park in the city center.', latitude: 32.93982, longitude: -80.03677 }
+  { id: '1', name: 'TD Arena', description: 'Free Airpods at TD Arena with basketball game attendance!', latitude: 32.7856, longitude: -79.9344 },
+  { id: '2', name: 'Harbor Walk', description: 'Free pizza at Harbor Walk for networking event!', latitude: 32.79155, longitude: -79.92658 },
+  { id: '3', name: 'Rivers Green', description: 'Pop up poster sale at Rivers Green!', latitude: 32.78404, longitude: -79.93950 }
 ];
 
 // PUT TYPE OF THE OBJECT
