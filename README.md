@@ -1,4 +1,10 @@
-# Map Notification Homework
+# Map Notification Homework - NOTES
+
+Remember that project is in root folder, not just map-notification-homework. Will get major issues running app otherwise. 
+
+Encountered weird error where Expo CLI latest version is 55.0.0 or something to that effect, and ExpoGo iOS is only up to 54.0.2 or so. Had to downgrade CLI to work. 
+
+---------------------------------------------------------------------------------------------
 
 ## Submission Instructions
 To complete and submit this assignment, you will be using Git and GitHub. Please follow these exact steps to ensure your work is tracked and graded correctly:
