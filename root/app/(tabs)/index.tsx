@@ -81,10 +81,10 @@ export default function Index() {
               { latitude: targetLoc.latitude, longitude: targetLoc.longitude }
             );
 
-            // Geofence Logic for THIS specific location
+            // Geofence Logic for this specific location
             if (dist <= GEOFENCE_RADIUS) {
               
-              // If they are inside the circle AND haven't been notified for THIS location yet
+              // if inside circle and haven't been notified for this location yet
               if (!enteredZones.current[targetLoc.id]) {
                 console.log(`Crossed into ${targetLoc.name}! Triggering notification...`);
                 
@@ -101,12 +101,12 @@ export default function Index() {
                   trigger: null, // Fire immediately
                 });
         
-                // Add this location's ID to our Set so we don't spam them
+                // Add this location's ID to Set to avoid spam 
                 enteredZones.current[targetLoc.id] = true;
               }
 
             } else {
-              // If they leave THIS circle, remove it from the Set to reset the tracker
+              // If leave this circle, remove from Set to reset tracker
               if (enteredZones.current[targetLoc.id]) {
                 console.log(`Left ${targetLoc.name}. Resetting tracker.`);
                 enteredZones.current[targetLoc.id] = false;
@@ -134,20 +134,19 @@ export default function Index() {
       
   //   }
 
-
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Welcome to the Campus Map Notification App!</Text>
-
+      {/* title */}
+      <Text style={styles.title}>Welcome to the Campus Map Notification App!</Text>
+      {/* error message */}
       {errorMsg && <Text style={styles.errorText}>{errorMsg}</Text>}
 
       <View style={styles.buttonContainer}>
-        {/* *** 4. The Permissions Button *** */}
+        {/* permissions button */}
         <TouchableOpacity style={styles.button} onPress={requestPermissions}>
           <Text style={styles.buttonText}>Request Permissions</Text>
         </TouchableOpacity>
-
-        {/* *** 5. The Map Navigation Button *** */}
+        {/* map nav button */}
         <TouchableOpacity style={[styles.button, styles.mapButton]} onPress={() => router.push('/map')}>
           <Text style={styles.buttonText}>View Campus Map</Text>
         </TouchableOpacity>
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 40,
@@ -176,7 +175,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    gap: 15, // Adds space between the buttons
+    gap: 15, 
   },
   button: {
     backgroundColor: '#007AFF',
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   mapButton: {
-    backgroundColor: '#34C759', // Different color for the map button
+    backgroundColor: '#34C759', 
   },
   buttonText: {
     color: 'white',

@@ -24,7 +24,7 @@ export const TOUR_LOCATIONS: TourLocation[] = [
   { id: '3', name: 'Rivers Green', description: 'Pop up poster sale at Rivers Green!', latitude: 32.78404, longitude: -79.93950 }
 ];
 
-// PUT TYPE OF THE OBJECT
+// PUT TYPE OF OBJECT
 const CHARLESTON_CENTER: Region = {
   latitude: 32.78,
   longitude: -79.93,
