@@ -1,6 +1,6 @@
+import { useRef, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useRef, useState } from "react";
-import MapView, { Circle, Marker, Region, PROVIDER_GOOGLE, Callout } from "react-native-maps";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 
 // map.tsx
 // --------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ interface TourLocation {
 
 // --- STARTER DATA ---
 const TOUR_LOCATIONS: TourLocation[] = [
-  { id: '1', name: 'Home', description: 'Home of the Cougars.', latitude: 32.9366, longitude: -80.0385 },
+  { id: '1', name: 'Home', description: 'Home of the Cougars.', latitude: 32.91213, longitude: -80.01183 },
   { id: '2', name: 'CIP', description: 'Historic defensive seawall.', latitude: 32.940114462656005, longitude: -80.04857197526441 },
   { id: '3', name: 'Walmart', description: '10-acre park in the city center.', latitude: 32.93982, longitude: -80.03677 }
 ];
@@ -64,12 +64,13 @@ const map = () => {
   };
   
   return (
-    <View>
+    <View style={styles.container}>
       <MapView 
         style={styles.map} 
         provider={PROVIDER_GOOGLE} 
         initialRegion={CHARLESTON_CENTER}
-        showsUserLocation={true} 
+        showsUserLocation={true}
+        ref={mapRef} 
       >
         {/* <Marker coordinate={{ 
           latitude: TARGET_LAT, 
@@ -129,7 +130,9 @@ const styles = StyleSheet.create({
     alignItems: 'center' 
   },
   map: { 
-    flex: 1 
+    flex: 1,
+    width: '100%',
+    height: '100%' 
   },
   bottomCard: { 
     position: 'absolute', 

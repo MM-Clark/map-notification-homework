@@ -81,42 +81,42 @@ export default function Index() {
           setLocation(newLocation);
       
           // ********** Calculate how far user is from events ***********************************
-          // TOUR_LOCATIONS.forEach((targetLoc) => {
-          //   // geolib expects coordinate objects, not 4 raw numbers
-          //   const dist = getDistance(
-          //     { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
-          //     { latitude: targetLoc.latitude, longitude: targetLoc.longitude }
-          //   );
+          TOUR_LOCATIONS.forEach((targetLoc) => {
+            // geolib expects coordinate objects, not 4 raw numbers
+            const dist = getDistance(
+              { latitude: newLocation.coords.latitude, longitude: newLocation.coords.longitude },
+              { latitude: targetLoc.latitude, longitude: targetLoc.longitude }
+            );
 
-          //   // Geofence Logic for THIS specific location
-          //   if (dist <= GEOFENCE_RADIUS) {
+            // Geofence Logic for THIS specific location
+            if (dist <= GEOFENCE_RADIUS) {
               
-          //     // If they are inside the circle AND haven't been notified for THIS location yet
-          //     if (!enteredZones.current.has(targetLoc.id)) {
-          //       console.log(`Crossed into ${targetLoc.name}! Triggering notification...`);
+              // If they are inside the circle AND haven't been notified for THIS location yet
+              if (!enteredZones.current.has(targetLoc.id)) {
+                console.log(`Crossed into ${targetLoc.name}! Triggering notification...`);
                 
-          //       Notifications.scheduleNotificationAsync({
-          //         content: {
-          //           title: `Welcome to ${targetLoc.name}!`,
-          //           body: targetLoc.message || "Click here to view more details.",
-          //           sound: true,
-          //           data: { locationId: targetLoc.id }, // Pass the ID so you know what they clicked
-          //         },
-          //         trigger: null, // Fire immediately
-          //       });
+                Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: `Welcome to ${targetLoc.name}!`,
+                    body: targetLoc.message || "Click here to view more details.",
+                    sound: true,
+                    data: { locationId: targetLoc.id }, // Pass the ID so you know what they clicked
+                  },
+                  trigger: null, // Fire immediately
+                });
         
-          //       // Add this location's ID to our Set so we don't spam them
-          //       enteredZones.current.add(targetLoc.id);
-          //     }
+                // Add this location's ID to our Set so we don't spam them
+                enteredZones.current.add(targetLoc.id);
+              }
 
-          //   } else {
-          //     // If they leave THIS circle, remove it from the Set to reset the tracker
-          //     if (enteredZones.current.has(targetLoc.id)) {
-          //       console.log(`Left ${targetLoc.name}. Resetting tracker.`);
-          //       enteredZones.current.delete(targetLoc.id);
-          //     }
-          //   }
-          // });
+            } else {
+              // If they leave THIS circle, remove it from the Set to reset the tracker
+              if (enteredZones.current.has(targetLoc.id)) {
+                console.log(`Left ${targetLoc.name}. Resetting tracker.`);
+                enteredZones.current.delete(targetLoc.id);
+              }
+            }
+          });
         }
       );
     })();
