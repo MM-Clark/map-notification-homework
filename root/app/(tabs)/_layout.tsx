@@ -11,7 +11,7 @@ export default function Layout() {
         options={{
           title: "Home",
           tabBarIcon: ({ focused, color, size }) => {
-            const iconName = focused ? "home" : "homels-outline";
+            const iconName = focused ? "home" : "home-outline";
             return <Ionicons name={iconName} size={size} color={color} />;
           },
         }}

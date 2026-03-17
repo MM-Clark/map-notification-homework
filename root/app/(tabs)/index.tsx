@@ -10,7 +10,7 @@ import { router, useRouter } from "expo-router";
 // Target Coordinates (e.g., A Local Coffee Shop)
 const TARGET_LAT = 32.7900; // Patriots Point area
 const TARGET_LNG = -79.9061;
-const GEOFENCE_RADIUS = 100; // 50 meters
+const GEOFENCE_RADIUS = 100; // 100 meters
 
 // Force notifications to show up as a banner when the app is open!
 Notifications.setNotificationHandler({
@@ -29,6 +29,8 @@ export default function Index() {
   const [distance, setDistance] = useState<number | null>(null);
 
   const enteredZones = useRef<{ [key: string]: boolean }>({});
+  // const hasEnteredZone = useRef<boolean>(false); // ********************
+
   const router = useRouter();
   // helper function for pressing button to request permissions
   const requestPermissions = async () => {
@@ -86,6 +88,7 @@ export default function Index() {
               
               // if inside circle and haven't been notified for this location yet
               if (!enteredZones.current[targetLoc.id]) {
+              // if (!hasEnteredZone.current) {
                 console.log(`Crossed into ${targetLoc.name}! Triggering notification...`);
                 
                 Notifications.scheduleNotificationAsync({
@@ -103,12 +106,15 @@ export default function Index() {
         
                 // Add this location's ID to Set to avoid spam 
                 enteredZones.current[targetLoc.id] = true;
+                // hasEnteredZone.current = true;
               }
 
             } else {
               // If leave this circle, remove from Set to reset tracker
-              if (enteredZones.current[targetLoc.id]) {
+              if (!enteredZones.current[targetLoc.id]) {
+              // if (hasEnteredZone.current) {
                 console.log(`Left ${targetLoc.name}. Resetting tracker.`);
+                // hasEnteredZone.current = false;
                 enteredZones.current[targetLoc.id] = false;
               }
             }
