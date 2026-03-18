@@ -11,7 +11,7 @@ import { router, useRouter } from "expo-router";
 const TARGET_LAT = 32.7900; // Patriots Point area
 const TARGET_LNG = -79.9061;
 const GEOFENCE_RADIUS = 100; // 100 meters
-
+// const GEOFENCE_EXIT_RADIUS = 150;
 // Force notifications to show up as a banner when the app is open!
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -27,7 +27,7 @@ export default function Index() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [distance, setDistance] = useState<number | null>(null);
-
+  // prevents multiple notification issue
   const enteredZones = useRef<{ [key: string]: boolean }>({});
   // const hasEnteredZone = useRef<boolean>(false); // ********************
 
